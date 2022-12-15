@@ -1,10 +1,14 @@
 import librosa
 import numpy as np
 import tensorflow as tf
-tf.autograph.set_verbosity(3)
+import random
+import sounddevice as sd 
+from scipy.io.wavfile import write
+import os
+
 _MODEL_PATH_ = "model.h5"
 _SAMPLES_ = 22050
-
+_SECONDS_ = 1
 class _Keyword_Spotter_:
 
     model = tf.keras.models.load_model(_MODEL_PATH_)
@@ -49,6 +53,8 @@ class _Keyword_Spotter_:
         #Loading the audio file.
         signal, sample_rate = librosa.load(file_path)
 
+        #We dont need the audio file anymore so we can delete it.
+        os.remove(file_path)
         #Checking for the consistency of the audio file's length.
         if len(signal) >= _SAMPLES_:
             signal = signal[:_SAMPLES_]
@@ -58,11 +64,21 @@ class _Keyword_Spotter_:
         
         return (MFCCs.T)
 
+    def record(self, samples, seconds):
+        print("Recording......")
+        record = sd.rec(int(seconds*samples), samplerate=samples, channels=2)
+        sd.wait()
+        audio_file = f"recording_{random.randint(0,10000)}.wav"
+        write(audio_file, samples, record)
+        print("Finished recording!......")
+        return audio_file
 
 if __name__=="__main__":
     spotter_instance = _Keyword_Spotter_()
     
+    #Recording an audio file.
+    audio_file = spotter_instance.record(_SAMPLES_, _SECONDS_)
     #Prediction.
-    MFCCs = spotter_instance.preprocess('/home/neelabh/Desktop/Audio_classification/dataset/right/0a2b400e_nohash_0.wav')
+    MFCCs = spotter_instance.preprocess(audio_file)
     keyword = spotter_instance.prediction(MFCCs)
     print(f'The keyword is: {keyword}')
