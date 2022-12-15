@@ -28,7 +28,7 @@ class _Keyword_Spotter_:
 
     def prediction(self, MFCCs):
         '''
-        Predicts the keywords in the audio file.
+        Predicts the keywords in the audio file and returns the predicted keyword.
         param: file_path(str) = Path to the audio file.
         '''
 
@@ -44,7 +44,7 @@ class _Keyword_Spotter_:
 
     def preprocess(self, file_path, num_mfcc=13, n_fft=2048, hop_length=512):
         '''
-        Extracts MFCCs from an audio file
+        Extracts MFCCs from an audio file and returns the transpose of MFCCs ndarray
         param: file_path(str) = Path to the audio file.
         param: num_mfcc(int) = number of coefficients to extract from the audio.
         param: n_fft(int) = Interval for Fast Fourier Transform.
@@ -65,6 +65,11 @@ class _Keyword_Spotter_:
         return (MFCCs.T)
 
     def record(self, samples, seconds):
+        '''
+        Records audio from the mic and returns the path of that saved audio file.
+        param: samples = Cycles per second.
+        param: seconds = Durtion of the audio. #Hardcoded to 1s
+        '''
         print("Recording......")
         record = sd.rec(int(seconds*samples), samplerate=samples, channels=2)
         sd.wait()
