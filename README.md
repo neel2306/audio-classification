@@ -14,11 +14,7 @@ The model is trained to identify following words:
 ## Installation Guide
 1. Make sure python==3.9 is installed in your system.
 2. Download the requirements.txt file and run the following code in your terminal
-   '''
-   pip install requirements.txt
-   '''
+   > pip install requirements.txt
 3. Download the model.5 file, system.py and main.py files in your working directory.
 4. Run the following code in the terminal:
-   '''
-   python main.py
-   '''
+   > python main.py
